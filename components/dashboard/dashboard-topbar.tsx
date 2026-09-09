@@ -15,12 +15,17 @@ const today = new Intl.DateTimeFormat("fr-FR", {
   year: "numeric",
 }).format(new Date("2026-09-06"));
 
-function DashboardTopbar() {
+interface DashboardTopbarProps {
+  merchantName?: string;
+}
+
+function DashboardTopbar({ merchantName }: DashboardTopbarProps) {
   const pathname = usePathname();
   const activeItem =
     dashboardNavItems.find((item) =>
       item.href === "/dashboard" ? pathname === item.href : pathname.startsWith(item.href)
     ) ?? dashboardNavItems[0];
+  const firstName = merchantName?.split(" (")[0];
 
   return (
     <header className="flex h-16 shrink-0 items-center gap-3 border-b border-border bg-background px-4 sm:px-6">
@@ -30,7 +35,9 @@ function DashboardTopbar() {
       <div className="flex min-w-0 flex-1 flex-col">
         <h1 className="truncate text-base font-semibold text-foreground sm:text-lg">
           {activeItem.title === "Tableau de bord"
-            ? "Bonjour 👋"
+            ? firstName
+              ? `Bonjour, ${firstName} 👋`
+              : "Bonjour 👋"
             : activeItem.title}
         </h1>
         <p className="hidden truncate text-xs text-muted-foreground sm:block">
