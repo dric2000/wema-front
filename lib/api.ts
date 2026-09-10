@@ -1,6 +1,11 @@
 import { cache } from "react";
 
-import type { DashboardOverview, ProductsResponse } from "@/lib/types";
+import type {
+  DashboardOverview,
+  ProductsResponse,
+  TransactionDetail,
+  TransactionsResponse,
+} from "@/lib/types";
 
 const API_URL = process.env.WEMA_API_URL;
 
@@ -33,4 +38,16 @@ export const getDashboardOverview = cache(
 export const getProducts = cache(
   (): Promise<ProductsResponse | null> =>
     fetchApi<ProductsResponse>("/api/products")
+);
+
+export const getTransactions = cache(
+  (page = 1): Promise<TransactionsResponse | null> =>
+    fetchApi<TransactionsResponse>(
+      page > 1 ? `/api/transactions?page=${page}` : "/api/transactions"
+    )
+);
+
+export const getTransaction = cache(
+  (id: string): Promise<TransactionDetail | null> =>
+    fetchApi<TransactionDetail>(`/api/transactions/${id}`)
 );

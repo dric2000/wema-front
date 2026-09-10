@@ -14,6 +14,23 @@ export function formatAmount(amount: number): string {
   return `${amountFormatter.format(amount)} F CFA`;
 }
 
+const dateTimeFormatter = new Intl.DateTimeFormat("fr-FR", {
+  day: "2-digit",
+  month: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+});
+
+export function formatDateTime(iso: string): string {
+  return dateTimeFormatter.format(new Date(iso));
+}
+
+export function formatItemsSummary(
+  items: { product: { name: string }; quantity: number }[]
+): string {
+  return items.map((item) => `${item.product.name} (x${item.quantity})`).join(", ");
+}
+
 export const transactionTypeLabels: Record<TransactionType, string> = {
   SALE: "Vente",
   PAYMENT: "Paiement",

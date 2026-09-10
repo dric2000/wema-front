@@ -1,3 +1,5 @@
+import { Toaster } from "react-hot-toast";
+
 import { AppSidebar } from "@/components/dashboard/app-sidebar";
 import { DashboardTopbar } from "@/components/dashboard/dashboard-topbar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
@@ -15,6 +17,29 @@ export default async function DashboardLayout(props: LayoutProps<"/dashboard">) 
           {props.children}
         </main>
       </SidebarInset>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: "var(--card)",
+            color: "var(--foreground)",
+            border: "1px solid var(--border)",
+            fontSize: "0.875rem",
+          },
+          success: {
+            iconTheme: {
+              primary: "var(--primary)",
+              secondary: "var(--primary-foreground)",
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: "var(--destructive)",
+              secondary: "var(--destructive-foreground)",
+            },
+          },
+        }}
+      />
     </SidebarProvider>
   );
 }
