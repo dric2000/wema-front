@@ -1,6 +1,6 @@
 "use client";
 
-import { Headphones, Sparkles } from "lucide-react";
+import { Headphones } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -27,7 +27,6 @@ function AppSidebar() {
           href="/dashboard"
           className="flex items-center gap-1 group-data-[collapsible=icon]:justify-center"
         >
-          <Sparkles className="size-4 shrink-0 -translate-y-1.5 text-warning" />
           <span className="text-xl font-bold tracking-tight text-primary group-data-[collapsible=icon]:hidden">
             Wemá
           </span>
