@@ -1,6 +1,7 @@
 import { cache } from "react";
 
 import type {
+  CustomersResponse,
   DashboardOverview,
   ProductDetail,
   ProductsResponse,
@@ -8,7 +9,7 @@ import type {
   TransactionsResponse,
 } from "@/lib/types";
 
-const API_URL = process.env.WEMA_API_URL;
+const API_URL = process.env.WEMA_API_URL?.trim().replace(/\/$/, "");
 
 async function fetchApi<T>(path: string): Promise<T | null> {
   if (!API_URL) {
@@ -91,4 +92,9 @@ export const getTransactions = cache(
 export const getTransaction = cache(
   (id: string): Promise<TransactionDetail | null> =>
     fetchApi<TransactionDetail>(`/api/transactions/${id}`)
+);
+
+export const getCustomers = cache(
+  (): Promise<CustomersResponse | null> =>
+    fetchApi<CustomersResponse>("/api/customers")
 );

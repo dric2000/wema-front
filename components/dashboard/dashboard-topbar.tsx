@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, ChevronDown, CircleDot } from "lucide-react";
+import { Calendar, ChevronDown, CircleDot, Hand } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -8,12 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { dashboardNavItems } from "@/lib/dashboard-nav";
 
-const today = new Intl.DateTimeFormat("fr-FR", {
-  weekday: "long",
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-}).format(new Date("2026-09-06"));
+const today = "samedi 6 septembre 2026";
 
 interface DashboardTopbarProps {
   merchantName?: string;
@@ -36,8 +31,18 @@ function DashboardTopbar({ merchantName }: DashboardTopbarProps) {
         <h1 className="truncate text-base font-semibold text-foreground sm:text-lg">
           {activeItem.title === "Tableau de bord"
             ? firstName
-              ? `Bonjour, ${firstName} 👋`
-              : "Bonjour 👋"
+              ? (
+                  <>
+                    Bonjour, {firstName}{" "}
+                    <Hand className="inline size-4 text-warning" />
+                  </>
+                )
+              : (
+                  <>
+                    Bonjour{" "}
+                    <Hand className="inline size-4 text-warning" />
+                  </>
+                )
             : activeItem.title}
         </h1>
         <p className="hidden truncate text-xs text-muted-foreground sm:block">

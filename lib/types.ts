@@ -97,6 +97,16 @@ export interface ProductRecord {
   updated_at: string;
 }
 
+export interface Customer {
+  id: string;
+  merchant_id: string;
+  name: string;
+  aliases: string[];
+  balance: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface ProductMovement {
   id: string;
   date: string;
@@ -242,4 +252,15 @@ export interface ActionResult {
   success: boolean;
   id?: string;
   message?: string;
+}
+
+export interface CustomersSummary {
+  total_customers: number;
+  debtors_count: number;
+  total_outstanding_debt: number;
+}
+
+export interface CustomersResponse {
+  summary: CustomersSummary;
+  data: Customer[];
 }
