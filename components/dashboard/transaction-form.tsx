@@ -233,7 +233,9 @@ function TransactionForm({ products, transaction }: TransactionFormProps) {
                 </label>
                 <Select
                   value={item.product_id}
-                  onValueChange={(value) => handleProductChange(index, value)}
+                  onValueChange={(value) => {
+                    if (value) handleProductChange(index, value);
+                  }}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Choisir un produit">
