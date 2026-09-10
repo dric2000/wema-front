@@ -79,6 +79,49 @@ export interface ProductsResponse {
   data: Product[];
 }
 
+export interface ProductInput {
+  name: string;
+  aliases: string[];
+  unit_price: number;
+  stock: number;
+}
+
+export interface ProductRecord {
+  id: string;
+  merchant_id: string;
+  name: string;
+  aliases: string[];
+  unit_price: number;
+  stock: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ProductMovement {
+  id: string;
+  date: string;
+  type: TransactionType;
+  direction: "IN" | "OUT";
+  quantity: number;
+  unit_price: number;
+  total_price: number;
+  customer: string | null;
+  transaction_id: string;
+}
+
+export interface ProductDetailSummary {
+  current_stock: number;
+  unit_price: number;
+  total_sold_quantity: number;
+  total_restocked_quantity: number;
+}
+
+export interface ProductDetail {
+  product: ProductRecord;
+  summary: ProductDetailSummary;
+  movements: ProductMovement[];
+}
+
 export interface TransactionItemProduct {
   id: string;
   name: string;

@@ -2,6 +2,7 @@ import { cache } from "react";
 
 import type {
   DashboardOverview,
+  ProductDetail,
   ProductsResponse,
   TransactionDetail,
   TransactionsResponse,
@@ -30,6 +31,41 @@ async function fetchApi<T>(path: string): Promise<T | null> {
   }
 }
 
+export type MutateResult<T> =
+  | { success: true; data: T | null }
+  | { success: false; message: string };
+
+export async function mutateApi<T = unknown>(
+  path: string,
+  method: "POST" | "PUT" | "DELETE",
+  body?: unknown
+): Promise<MutateResult<T>> {
+  if (!API_URL) {
+    return { success: false, message: "Configuration API manquante." };
+  }
+
+  try {
+    const res = await fetch(`${API_URL}${path}`, {
+      method,
+      headers: body ? { "Content-Type": "application/json" } : undefined,
+      body: body ? JSON.stringify(body) : undefined,
+    });
+
+    if (!res.ok) {
+      return {
+        success: false,
+        message: `Le serveur a répondu avec une erreur (${res.status}).`,
+      };
+    }
+
+    const data = await res.json().catch(() => null);
+    return { success: true, data: data as T | null };
+  } catch (error) {
+    console.error(`mutateApi ${path} failed`, error);
+    return { success: false, message: "Impossible de contacter le serveur." };
+  }
+}
+
 export const getDashboardOverview = cache(
   (): Promise<DashboardOverview | null> =>
     fetchApi<DashboardOverview>("/api/dashboard/overview")
@@ -38,6 +74,11 @@ export const getDashboardOverview = cache(
 export const getProducts = cache(
   (): Promise<ProductsResponse | null> =>
     fetchApi<ProductsResponse>("/api/products")
+);
+
+export const getProduct = cache(
+  (id: string): Promise<ProductDetail | null> =>
+    fetchApi<ProductDetail>(`/api/products/${id}`)
 );
 
 export const getTransactions = cache(

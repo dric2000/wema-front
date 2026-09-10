@@ -1,6 +1,8 @@
-import { AlertTriangle, Box, PackageX, TriangleAlert } from "lucide-react";
+import Link from "next/link";
+import { AlertTriangle, Box, PackageX, Plus, TriangleAlert } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getProducts } from "@/lib/api";
 import { formatAmount } from "@/lib/format";
@@ -90,9 +92,15 @@ export default async function StockPage() {
 
       <Card>
         <CardContent>
-          <h2 className="mb-4 text-base font-semibold text-foreground">
-            Catalogue produits
-          </h2>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-base font-semibold text-foreground">
+              Catalogue produits
+            </h2>
+            <Button size="sm" render={<Link href="/dashboard/stock/new" />}>
+              <Plus className="size-4" />
+              Ajouter un produit
+            </Button>
+          </div>
           {data.length === 0 ? (
             <p className="py-8 text-center text-sm text-muted-foreground">
               Aucun produit enregistré pour le moment.
@@ -100,28 +108,30 @@ export default async function StockPage() {
           ) : (
             <ul className="flex flex-col">
               {data.map((product) => (
-                <li
-                  key={product.id}
-                  className="flex items-center gap-3 border-b border-border py-3 last:border-0"
-                >
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
-                    <Box className="size-4" />
-                  </span>
-                  <div className="flex min-w-0 flex-1 flex-col">
-                    <span className="truncate text-sm font-medium text-foreground">
-                      {product.name}
+                <li key={product.id} className="border-b border-border last:border-0">
+                  <Link
+                    href={`/dashboard/stock/${product.id}`}
+                    className="-mx-2 flex items-center gap-3 rounded-lg px-2 py-3 transition-colors hover:bg-muted/50"
+                  >
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                      <Box className="size-4" />
                     </span>
-                    <span className="truncate text-xs text-muted-foreground">
-                      {product.aliases.join(", ")}
+                    <div className="flex min-w-0 flex-1 flex-col">
+                      <span className="truncate text-sm font-medium text-foreground">
+                        {product.name}
+                      </span>
+                      <span className="truncate text-xs text-muted-foreground">
+                        {product.aliases.join(", ")}
+                      </span>
+                    </div>
+                    <span className="hidden shrink-0 text-xs text-muted-foreground sm:block">
+                      {product.stock} en stock
                     </span>
-                  </div>
-                  <span className="hidden shrink-0 text-xs text-muted-foreground sm:block">
-                    {product.stock} en stock
-                  </span>
-                  <span className="w-24 shrink-0 text-right text-sm font-medium text-foreground">
-                    {formatAmount(product.unit_price)}
-                  </span>
-                  <span className="shrink-0">{stockBadge(product)}</span>
+                    <span className="w-24 shrink-0 text-right text-sm font-medium text-foreground">
+                      {formatAmount(product.unit_price)}
+                    </span>
+                    <span className="shrink-0">{stockBadge(product)}</span>
+                  </Link>
                 </li>
               ))}
             </ul>
