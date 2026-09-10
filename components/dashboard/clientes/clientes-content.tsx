@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { formatAmount } from "@/lib/format";
+import { formatAmount, formatTableDate } from "@/lib/format";
 import type { Customer, CustomersSummary } from "@/lib/types";
 
 type StatusFilter = "" | "debt" | "clear";
@@ -34,14 +34,6 @@ function getInitials(name: string) {
     .slice(0, 2)
     .join("")
     .toUpperCase();
-}
-
-function formatTableDate(value: string) {
-  return new Intl.DateTimeFormat("fr-FR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(new Date(value));
 }
 
 interface ClientesContentProps {
@@ -298,102 +290,78 @@ function ClientesContent({ summary, customers }: ClientesContentProps) {
 
         <Card>
           <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="w-8 px-3 py-3 text-left">
-                      <input
-                        type="checkbox"
-                        className="accent-primary"
-                        checked={
-                          selected.length === filtered.length &&
-                          filtered.length > 0
-                        }
-                        onChange={toggleAll}
-                      />
-                    </th>
-                    <th className="px-3 py-3 text-left">
-                      <span className="flex items-center gap-1 font-semibold text-foreground">
-                        Date
-                        <ArrowUpDown className="size-3 text-muted-foreground" />
-                      </span>
-                    </th>
-                    <th className="px-3 py-3 text-left font-semibold text-foreground">
-                      Cliente
-                    </th>
-                    <th className="px-3 py-3 text-left font-semibold text-foreground">
-                      Alias
-                    </th>
-                    <th className="px-3 py-3 text-right font-semibold text-foreground">
-                      Solde (F CFA)
-                    </th>
-                    <th className="px-3 py-3 text-left font-semibold text-foreground">
-                      Statut
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtered.map((customer) => (
-                    <tr
-                      key={customer.id}
-                      className="border-b border-border last:border-0 hover:bg-muted/40"
-                    >
-                      <td className="px-3 py-3">
-                        <input
-                          type="checkbox"
-                          className="accent-primary"
-                          checked={selected.includes(customer.id)}
-                          onChange={() => toggleRow(customer.id)}
-                        />
-                      </td>
-                      <td className="px-3 py-3 text-muted-foreground">
-                        {formatTableDate(customer.created_at)}
-                      </td>
-                      <td className="px-3 py-3">
-                        <div className="flex items-center gap-2">
-                          <Avatar className="size-7 shrink-0">
-                            <AvatarFallback className="bg-secondary text-xs text-primary">
-                              {getInitials(customer.name)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className="font-medium text-foreground">
-                            {customer.name}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-3 py-3 text-muted-foreground">
-                        {customer.aliases.length > 0
-                          ? customer.aliases.join(", ")
-                          : "—"}
-                      </td>
-                      <td className="px-3 py-3 text-right font-medium text-foreground">
-                        {formatAmount(customer.balance)}
-                      </td>
-                      <td className="px-3 py-3">
+            <div className="flex items-center gap-3 border-b border-border px-4 py-2.5">
+              <input
+                type="checkbox"
+                className="accent-primary"
+                checked={
+                  selected.length === filtered.length && filtered.length > 0
+                }
+                onChange={toggleAll}
+                aria-label="Tout sélectionner"
+              />
+              <span className="text-sm font-semibold text-foreground">
+                Clientes
+              </span>
+              <span className="ml-auto text-sm font-semibold text-foreground">
+                Solde
+              </span>
+            </div>
+            {filtered.length === 0 ? (
+              <p className="px-4 py-10 text-center text-sm text-muted-foreground">
+                Aucune cliente trouvée pour ces critères.
+              </p>
+            ) : (
+              <ul className="flex flex-col">
+                {filtered.map((customer) => (
+                  <li
+                    key={customer.id}
+                    className="flex items-start gap-3 border-b border-border px-4 py-3 last:border-0"
+                  >
+                    <input
+                      type="checkbox"
+                      className="mt-2 shrink-0 accent-primary"
+                      checked={selected.includes(customer.id)}
+                      onChange={() => toggleRow(customer.id)}
+                      aria-label={customer.name}
+                    />
+                    <Avatar className="mt-0.5 size-8 shrink-0">
+                      <AvatarFallback className="bg-secondary text-xs text-primary">
+                        {getInitials(customer.name)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex min-w-0 flex-1 flex-col gap-1">
+                      <div className="flex items-start justify-between gap-3">
+                        <span className="min-w-0 truncate font-medium text-foreground">
+                          {customer.name}
+                        </span>
                         <Badge
                           variant={
                             customer.balance > 0 ? "warning" : "secondary"
                           }
+                          className="shrink-0"
                         >
                           {customer.balance > 0 ? "Créance" : "À jour"}
                         </Badge>
-                      </td>
-                    </tr>
-                  ))}
-                  {filtered.length === 0 && (
-                    <tr>
-                      <td
-                        colSpan={6}
-                        className="py-10 text-center text-sm text-muted-foreground"
-                      >
-                        Aucune cliente trouvée pour ces critères.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+                      </div>
+                      {customer.aliases.length > 0 && (
+                        <span className="truncate text-xs text-muted-foreground">
+                          {customer.aliases.join(", ")}
+                        </span>
+                      )}
+                      <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
+                        <span className="shrink-0">
+                          {formatTableDate(customer.created_at)}
+                        </span>
+                        <span className="text-right font-medium whitespace-nowrap text-foreground">
+                          {formatAmount(customer.balance)}
+                        </span>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </CardContent>
         </Card>
       </div>

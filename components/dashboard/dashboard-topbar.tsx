@@ -8,12 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { dashboardNavItems } from "@/lib/dashboard-nav";
 
-const today = new Intl.DateTimeFormat("fr-FR", {
-  weekday: "long",
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-}).format(new Date("2026-09-06"));
+const today = "samedi 6 septembre 2026";
 
 interface DashboardTopbarProps {
   merchantName?: string;
